@@ -10,6 +10,10 @@
 
 #include <stdint.h>
 
+#define TEST_RUN_LEDS   5
+#define TEST_RUN_WIDTH  2
+#define TEST_RUN_STEP_MS 120
+
 typedef enum
 {
     LED_GROUP_START = 0,

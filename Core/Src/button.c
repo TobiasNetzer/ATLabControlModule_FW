@@ -77,6 +77,8 @@ void button_task(void)
                 }
                 else
                 {
+                	return;
+                	// don't send release event
                     send_button_event(
                         (button_id_t)i,
                         BUTTON_EVENT_RELEASE);

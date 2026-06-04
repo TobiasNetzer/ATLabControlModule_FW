@@ -6,7 +6,7 @@
  */
 #include "led_animation.h"
 #include "led_driver.h"
-
+#include <stdlib.h>
 #include "main.h"
 
 typedef struct
@@ -17,6 +17,9 @@ typedef struct
     int8_t direction;
 
     uint32_t last_update;
+
+    uint8_t position;
+    uint32_t last_step;
 
 } group_state_t;
 
@@ -31,6 +34,10 @@ static void group_fill(
 static void update_breath(
         group_state_t *state,
         uint8_t *brightness);
+
+static void update_test_running(
+		group_state_t *state,
+		led_group_t group);
 
 void led_animation_init(void)
 {
@@ -95,7 +102,23 @@ void led_animation_task(void)
                 break;
 
             case LED_MODE_TEST_IDLE:
-                group_fill(group, 30,30,30);
+                group_fill(group, 50,50,50);
+                break;
+
+            case LED_MODE_TEST_RUNNING:
+            	update_test_running(&groups[group], group);
+            	break;
+
+            case LED_MODE_TEST_PASSED:
+            	group_fill(group, 0,200,0);
+            	break;
+
+            case LED_MODE_TEST_FAILED:
+            	group_fill(group, 200,0,0);
+                break;
+
+            case LED_MODE_TEST_CANCELLED:
+            	group_fill(group, 220,140,0);
                 break;
 
             default:
@@ -129,6 +152,34 @@ static void update_breath(
     }
 
     *brightness = state->brightness;
+}
+
+static void update_test_running(group_state_t *state, led_group_t group)
+{
+    uint32_t now = HAL_GetTick();
+
+    if ((now - state->last_step) >= TEST_RUN_STEP_MS)
+    {
+        state->last_step = now;
+
+        state->position++;
+        if (state->position >= TEST_RUN_LEDS)
+            state->position = 0;
+    }
+
+    led_fill(2, TEST_RUN_LEDS, 0, 0, 0);
+
+    for (int i = 0; i < TEST_RUN_WIDTH; i++)
+    {
+        int p = state->position - i;
+
+        if (p < 0)
+            p += TEST_RUN_LEDS;
+
+        uint8_t brightness = 255 - (i * (255 / TEST_RUN_WIDTH));
+
+        led_set_pixel(2 + p, 0, 0, brightness);
+    }
 }
 
 static void group_fill(
