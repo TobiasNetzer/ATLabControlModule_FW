@@ -105,7 +105,7 @@ static void send_button_event(button_id_t id,
     report[1] = (uint8_t)id;
 
     tud_hid_report(
-        0,
+        1,
         report,
         sizeof(report));
 }

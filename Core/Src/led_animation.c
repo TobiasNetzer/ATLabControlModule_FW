@@ -94,8 +94,8 @@ void led_animation_task(void)
                 group_fill(group, 0, 0, brightness);
                 break;
 
-            case LED_MODE_RAINBOW:
-                /* TODO */
+            case LED_MODE_TEST_IDLE:
+                group_fill(group, 30,30,30);
                 break;
 
             default:

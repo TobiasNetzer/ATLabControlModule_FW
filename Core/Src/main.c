@@ -61,10 +61,10 @@ static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 void tud_hid_set_report_cb(uint8_t instance,
-                               uint8_t report_id,
-                               hid_report_type_t report_type,
-                               uint8_t const* buffer,
-                               uint16_t bufsize);
+                           uint8_t report_id,
+                           hid_report_type_t report_type,
+                           uint8_t const* buffer,
+                           uint16_t bufsize);
 
 uint16_t tud_hid_get_report_cb(uint8_t instance,
                                uint8_t report_id,
@@ -348,24 +348,26 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-void tud_hid_set_report_cb(
-    uint8_t instance,
-    uint8_t report_id,
-    hid_report_type_t report_type,
-    uint8_t const* buffer,
-    uint16_t bufsize)
+void tud_hid_set_report_cb(uint8_t instance,
+                           uint8_t report_id,
+                           hid_report_type_t report_type,
+                           uint8_t const* buffer,
+                           uint16_t bufsize)
 {
-    (void)instance;
-    (void)report_id;
-    (void)report_type;
+	(void) instance;
+  (void) report_id;
+  (void) report_type;
 
-    if(bufsize < 2)
-        return;
+	if (buffer[0] != 2)
+		return;
 
-    led_group_t group = (led_group_t)buffer[0];
-    led_mode_t mode   = (led_mode_t)buffer[1];
+	if (bufsize < 2)
+		return;
 
-    led_animation_set_mode(group, mode);
+	led_group_t group = buffer[1];
+	led_mode_t mode = buffer[2];
+
+	led_animation_set_mode(group, mode);
 }
 
 uint16_t tud_hid_get_report_cb(uint8_t instance,
