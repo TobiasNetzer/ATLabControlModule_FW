@@ -35,9 +35,7 @@ static void update_breath(
         group_state_t *state,
         uint8_t *brightness);
 
-static void update_test_running(
-		group_state_t *state,
-		led_group_t group);
+static void update_test_running(group_state_t *state);
 
 void led_animation_init(void)
 {
@@ -106,7 +104,7 @@ void led_animation_task(void)
                 break;
 
             case LED_MODE_TEST_RUNNING:
-            	update_test_running(&groups[group], group);
+            	update_test_running(&groups[group]);
             	break;
 
             case LED_MODE_TEST_PASSED:
@@ -154,7 +152,7 @@ static void update_breath(
     *brightness = state->brightness;
 }
 
-static void update_test_running(group_state_t *state, led_group_t group)
+static void update_test_running(group_state_t *state)
 {
     uint32_t now = HAL_GetTick();
 
